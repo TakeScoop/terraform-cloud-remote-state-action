@@ -1,0 +1,17 @@
+_extends: .github
+
+repository:
+  name: terraform-cloud-remote-state-action
+  description: GitHub Action to fetch outputs from a Terraform Cloud workspace
+  topics: github-actions, terraform, terraform-cloud
+  private: false
+  allow_auto_merge: true
+
+branches:
+  - name: master
+    protection:
+      required_status_checks:
+        contexts:
+          - lint
+          - test
+          - actionlint
