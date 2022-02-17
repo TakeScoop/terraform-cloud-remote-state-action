@@ -1,0 +1,40 @@
+name: Test
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Create workspace
+        id: workspace
+        uses:  TakeScoop/terraform-cloud-workspace-action@v2
+        with:
+          terraform_organization: takescoop-oss
+          terraform_token: ${{ secrets.TF_TOKEN_OSS }}
+          name: remote-state-action-e2e-test
+          apply: true
+          working_directory: e2e-test/
+          vcs_provider: github
+
+      - name: Run action
+        id: action
+        uses: ./
+        with:
+          workspace: remote-state-action-e2e-test
+          organization: takescoop-oss
+          token: ${{ secrets.TF_TOKEN_OSS }}
+      
+      - run: test "${{ steps.action.outputs.foo }}" == "bar"
+      - run: test "${{ fromJson(steps.actions.output.json).foo }}" == "bar"
+      - run: test "${{ steps.action.outputs.sensitive }}" == "secret"
+      - run: |
+          stars=$(echo "${{ steps.action.outputs.sensitive }}")
+          test "$stars" == "***"
