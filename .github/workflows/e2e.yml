@@ -22,7 +22,6 @@ jobs:
           name: remote-state-action-e2e-test
           apply: true
           working_directory: e2e-test/
-          vcs_type: github
 
       - name: Run action
         id: action
