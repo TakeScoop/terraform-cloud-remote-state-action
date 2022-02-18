@@ -56,17 +56,12 @@ jobs:
       - name: Test null
         run: test "${{ steps.action.outputs.null }}" == ""        
       - name: Test multiline output
+        env: 
+          multiline: "${{ steps.action.outputs.multiline }}"
         run: |
-          echo "${{ steps.action.outputs.multiline }}"
+          expected=$(printf "%s\n" "multi" "line" "output")
 
-          actual=$(cat<<EOF
-          ${{ steps.action.outputs.multiline }}
-          EOF)
+          echo "$multiline"
 
-          expected=$(printf "%s\n" "multi" "line" "output" "")
-
-          echo $actual
-          echo $expected
-
-          test "$actual" == "$expected"
+          test "$multiline" == "$expected"
 
