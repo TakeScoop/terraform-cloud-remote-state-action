@@ -16,19 +16,19 @@ func Run(inputs Inputs) error {
 		Address: inputs.Address,
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to configure client: %w", err)
 	}
 
 	workspace, err := client.Workspaces.Read(ctx, inputs.Organization, inputs.Workspace)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to find workspace %s/%s: %w", inputs.Organization, inputs.Workspace, err)
 	}
 
 	stateVersion, err := client.StateVersions.CurrentWithOptions(ctx, workspace.ID, &tfe.StateVersionCurrentOptions{
 		Include: "outputs",
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to fetch state outputs: %w", err)
 	}
 
 	for _, o := range stateVersion.Outputs {
