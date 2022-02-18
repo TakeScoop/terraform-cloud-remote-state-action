@@ -36,6 +36,3 @@ jobs:
       - run: echo "${{ steps.action.outputs.foo }}"
       - run: test "${{ fromJson(steps.action.outputs.json).foo }}" == "bar"
       - run: test "${{ steps.action.outputs.sensitive }}" == "secret"
-      - id: stars
-        run: echo "::set-output name=mask::$(echo ${{ steps.action.outputs.sensitive }})"
-      - run: test "${{ steps.stars.outputs.mask }}" == "***"
