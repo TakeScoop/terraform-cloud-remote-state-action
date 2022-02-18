@@ -34,6 +34,8 @@ func Run(inputs Inputs) error {
 	for _, o := range stateVersion.Outputs {
 		str := fmt.Sprint(o.Value)
 
+		fmt.Println(str)
+
 		if o.Sensitive {
 			githubactions.AddMask(str)
 		}
