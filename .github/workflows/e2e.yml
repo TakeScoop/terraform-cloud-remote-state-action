@@ -20,8 +20,9 @@ jobs:
           terraform_organization: takescoop-oss
           terraform_token: ${{ secrets.TF_TOKEN_OSS }}
           name: remote-state-action-e2e-test
-          apply: true
+          apply: false
           working_directory: e2e-test/
+          vcs_type: github
 
       - name: Run action
         id: action
