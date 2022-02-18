@@ -36,7 +36,4 @@ jobs:
       - run: echo "${{ steps.action.outputs.foo }}"
       - run: test "${{ fromJson(steps.action.outputs.json).foo }}" == "bar"
       - run: test "${{ steps.action.outputs.sensitive }}" == "secret"
-      - run: |
-          stars=$(echo "${{ steps.action.outputs.sensitive }}")
-          echo $stars
-          test "$stars" == "***"
+      - run: test $(echo "${{ steps.action.outputs.sensitive }}") == "***"
