@@ -56,8 +56,17 @@ jobs:
       - name: Test null
         run: test "${{ steps.action.outputs.null }}" == ""        
       - name: Test multiline output
-        continue-on-error: true
         run: |
           echo "${{ steps.action.outputs.multiline }}"
+
+          actual=$(cat<<EOF
+            ${{ steps.action.outputs.multiline }}
+          EOF)
+
           expected=$(printf "%s\n" "multi" "line" "output")
+
+          echo $actual
+          echo $expected
+
           test "${{ steps.action.outputs.multiline }}" == "$expected"
+
