@@ -53,9 +53,5 @@ output "null" {
 
 output "multiline" {
   description = "A multiline output"
-  value       = <<-EOF
-    mutli
-    line
-    output
-  EOF
+  value       = join("\n", ["multi", "line", "output"])
 }
