@@ -3,6 +3,11 @@ output "foo" {
   value       = "bar"
 }
 
+output "bar" {
+  description = "Another single ouptput"
+  value       = "baz"
+}
+
 output "json" {
   description = "A multiline output"
   value       = <<EOF
@@ -18,3 +23,4 @@ output "sensitive" {
   value       = "secret"
   sensitive   = true
 }
+
