@@ -22,7 +22,7 @@ jobs:
           name: remote-state-action-e2e-test
           apply: true
           working_directory: test-e2e/
-          vcs_type: github
+          execution_mode: local
 
       - name: Run action
         id: action
@@ -38,3 +38,19 @@ jobs:
         run: test "${{ fromJson(steps.action.outputs.json).foo }}" == "bar"
       - name: Test sensitive output
         run: test "${{ steps.action.outputs.sensitive }}" == "secret"
+      - name: Test int
+        run: test ${{ steps.action.outputs.int }} == 2
+      - name: Test float
+        run: test ${{ steps.action.outputs.float }} == 3.14
+      - name: Test map
+        run: test "${{ fromJson(steps.action.outputs.map).foo }}" == "bar"
+      - name: Test list
+        run: test "${{ fromJson(steps.action.outputs.list)[0] }}" == "foo"        
+      - name: Test set
+        run: test "${{ fromJson(steps.action.outputs.set)[0] }}" == "foo"
+      - name: Test null
+        run: |
+          echo ${{ steps.action.outputs.null }}
+          test "${{ steps.action.outputs.null }}" == "null"        
+      - name: Test multiline output
+        run: test "${{ steps.action.outputs.multiline }}" == "multi\nline\noutput"
