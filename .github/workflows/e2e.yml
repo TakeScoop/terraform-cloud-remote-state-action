@@ -33,6 +33,7 @@ jobs:
           token: ${{ secrets.TF_TOKEN_OSS }}
       
       - run: test "${{ steps.action.outputs.foo }}" == "bar"
+      - run: echo "${{ steps.actions.output.json }}"
       - run: test "${{ fromJson(steps.actions.output.json).foo }}" == "bar"
       - run: test "${{ steps.action.outputs.sensitive }}" == "secret"
       - run: |
