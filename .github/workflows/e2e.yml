@@ -5,6 +5,9 @@ on:
       - master
   pull_request:
 
+permissions:
+  checks: write
+
 jobs:
   test:
     name: e2e
@@ -20,7 +23,7 @@ jobs:
           terraform_organization: takescoop-oss
           terraform_token: ${{ secrets.TF_TOKEN_OSS }}
           name: remote-state-action-e2e-test
-          apply: true
+          apply: "${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}"
           working_directory: test-e2e/
           execution_mode: local
 
@@ -44,18 +47,21 @@ jobs:
         run: test ${{ steps.action.outputs.float }} == 3.14
       - name: Test map
         continue-on-error: true
-        run: test "${{ fromJson(steps.action.outputs.map).foo }}" == "bar"
+        run: |
+          echo  "${{ steps.action.outputs.map }}"
+          test "${{ fromJson(steps.action.outputs.map).foo }}" == "bar"
       - name: Test list
         continue-on-error: true
-        run: test "${{ fromJson(steps.action.outputs.list)[0] }}" == "foo"        
+        run: |
+          echo  "${{ steps.action.outputs.list }}"
+          test "${{ fromJson(steps.action.outputs.list)[0] }}" == "foo"        
       - name: Test set
         continue-on-error: true
-        run: test "${{ fromJson(steps.action.outputs.set)[0] }}" == "foo"
-      - name: Test null
-        continue-on-error: true
         run: |
-          echo ${{ steps.action.outputs.null }}
-          test "${{ steps.action.outputs.null }}" == "null"        
+          echo  "${{ steps.action.outputs.set }}"
+          test "${{ fromJson(steps.action.outputs.set)[0] }}" == "foo"
+      - name: Test null
+        run: test "${{ steps.action.outputs.null }}" == ""        
       - name: Test multiline output
         continue-on-error: true
         run: test "${{ steps.action.outputs.multiline }}" == "multi\nline\noutput"

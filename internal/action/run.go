@@ -3,6 +3,7 @@ package action
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/sethvargo/go-githubactions"
@@ -34,7 +35,7 @@ func Run(inputs Inputs) error {
 	for _, o := range stateVersion.Outputs {
 		str := fmt.Sprint(o.Value)
 
-		fmt.Println(str)
+		log.Println(str)
 
 		if o.Sensitive {
 			githubactions.AddMask(str)

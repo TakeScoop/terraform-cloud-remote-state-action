@@ -49,7 +49,7 @@ output "null" {
 
 output "multiline" {
   description = "A multiline output"
-  value       = <<EOF
+  value       = <<-EOF
     mutli
     line
     output
