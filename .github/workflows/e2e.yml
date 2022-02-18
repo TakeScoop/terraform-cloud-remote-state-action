@@ -46,28 +46,19 @@ jobs:
       - name: Test float
         run: test ${{ steps.action.outputs.float }} == 3.14
       - name: Test map
-        continue-on-error: true
-        run: |
-          echo  "${{ steps.action.outputs.map }}"
-          test "${{ fromJson(steps.action.outputs.map).foo.bar }}" == "baz"
+        run: test "${{ fromJson(steps.action.outputs.map).foo.bar }}" == "baz"
       - name: Test list
-        continue-on-error: true
-        run: |
-          echo  "${{ steps.action.outputs.list }}"
-          test "${{ fromJson(steps.action.outputs.list)[0] }}" == "foo"        
+        run: test "${{ fromJson(steps.action.outputs.list)[0] }}" == "foo"        
       - name: Test set
         continue-on-error: true
         run: |
           echo  "${{ steps.action.outputs.set }}"
-          test "${{ fromJson(steps.action.outputs.set)[0] }}" == "foo"
+          test "${{ steps.action.outputs.set }}" == '["foo","bar"]' ||
+            test "${{ steps.action.outputs.set }}" == '["bar","foo"]'
       - name: Test null
         run: test "${{ steps.action.outputs.null }}" == ""        
       - name: Test multiline output
         continue-on-error: true
         run: |
-          multi=$(cat <<EOF
-            multi
-            line
-            output
-          EOF)
-          test "${{ steps.action.outputs.multiline }}" == "$multi"
+          echo "${{ steps.action.outputs.multiline }}"
+          test "${{ steps.action.outputs.multiline }}" == "multi\nline\noutput"
