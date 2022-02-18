@@ -20,4 +20,4 @@ jobs:
           curl -fsSL  -o actionlint.tgz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
           sudo tar xfz actionlint.tgz -C /usr/local/bin
       - name: Check workflow files
-        run:  actionlint
+        run:  actionlint -ignore 'property ".*" is not defined in object type {}'

@@ -32,7 +32,9 @@ jobs:
           organization: takescoop-oss
           token: ${{ secrets.TF_TOKEN_OSS }}
       
-      - run: test "${{ steps.action.outputs.foo }}" == "bar"
-      - run: echo "${{ steps.action.outputs.foo }}"
-      - run: test "${{ fromJson(steps.action.outputs.json).foo }}" == "bar"
-      - run: test "${{ steps.action.outputs.sensitive }}" == "secret"
+      - name: Test simple output
+        run: test "${{ steps.action.outputs.foo }}" == "bar"
+      - name: Test JSON output
+        run: test "${{ fromJson(steps.action.outputs.json).foo }}" == "bar"
+      - name: Test sensitive output
+        run: test "${{ steps.action.outputs.sensitive }}" == "secret"
