@@ -50,15 +50,14 @@ jobs:
       - name: Test list
         run: test "${{ fromJson(steps.action.outputs.list)[0] }}" == "foo"        
       - name: Test set
-        continue-on-error: true
         run: |
-          echo  "${{ steps.action.outputs.set }}"
-          test "${{ steps.action.outputs.set }}" == '["foo","bar"]' ||
-            test "${{ steps.action.outputs.set }}" == '["bar","foo"]'
+          test '${{ steps.action.outputs.set }}' == '["foo","bar"]' ||
+            test '${{ steps.action.outputs.set }}' == '["bar","foo"]'
       - name: Test null
         run: test "${{ steps.action.outputs.null }}" == ""        
       - name: Test multiline output
         continue-on-error: true
         run: |
           echo "${{ steps.action.outputs.multiline }}"
-          test "${{ steps.action.outputs.multiline }}" == "multi\nline\noutput"
+          expected=$(printf "%s\n" "multi" "line" "output")
+          test "${{ steps.action.outputs.multiline }}" == "$expected"
