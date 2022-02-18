@@ -29,7 +29,11 @@ output "float" {
 
 output "map" {
   description = "A map"
-  value       = tomap({ "foo" = "bar" })
+  value = tomap({
+    foo = {
+      bar = "baz"
+    }
+  })
 }
 
 output "list" {

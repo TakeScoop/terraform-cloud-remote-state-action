@@ -49,7 +49,7 @@ jobs:
         continue-on-error: true
         run: |
           echo  "${{ steps.action.outputs.map }}"
-          test "${{ fromJson(steps.action.outputs.map).foo }}" == "bar"
+          test "${{ fromJson(steps.action.outputs.map).foo.bar }}" == "baz"
       - name: Test list
         continue-on-error: true
         run: |
@@ -64,4 +64,10 @@ jobs:
         run: test "${{ steps.action.outputs.null }}" == ""        
       - name: Test multiline output
         continue-on-error: true
-        run: test "${{ steps.action.outputs.multiline }}" == "multi\nline\noutput"
+        run: |
+          multi=$(cat <<EOF
+            multi
+            line
+            output
+          EOF)
+          test "${{ steps.action.outputs.multiline }}" == "$multi"

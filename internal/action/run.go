@@ -2,12 +2,43 @@ package action
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/sethvargo/go-githubactions"
 )
+
+// OutputString takes an interface and returns a stringified version
+func OutputString(i interface{}) (string, error) {
+	if i == nil {
+		return "", nil
+	}
+
+	t := reflect.TypeOf(i)
+	switch t.Kind() {
+	case
+		reflect.Array,
+		reflect.Map,
+		reflect.Slice,
+		reflect.Struct:
+		b, err := json.Marshal(i)
+		if err != nil {
+			return "", err
+		}
+		return string(b), nil
+
+	case
+		reflect.Chan,
+		reflect.Func:
+		return "", nil
+
+	default:
+		return fmt.Sprint(i), nil
+	}
+}
 
 func Run(inputs Inputs) error {
 	ctx := context.Background()
@@ -33,7 +64,10 @@ func Run(inputs Inputs) error {
 	}
 
 	for _, o := range stateVersion.Outputs {
-		str := fmt.Sprint(o.Value)
+		str, err := OutputString(o.Value)
+		if err != nil {
+			return err
+		}
 
 		log.Println(str)
 
