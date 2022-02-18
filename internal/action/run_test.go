@@ -1,17 +1,16 @@
 package action
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type OutputStringTestCase struct {
 	Interface interface{}
 	Expected  string
 	Message   string
-	Error     error
 }
 
 func TestOutputString(t *testing.T) {
@@ -22,12 +21,21 @@ func TestOutputString(t *testing.T) {
 			Expected:  "foo",
 		},
 		{
-			Message: "Test JSON string output",
+			Message: "Test map string output",
 			Interface: map[string]interface{}{
 				"foo": "bar",
 				"baz": "woz",
 			},
 			Expected: `{"baz":"woz","foo":"bar"}`,
+		},
+		{
+			Message: "Test nested map[stiring]interface output",
+			Interface: map[string]interface{}{
+				"foo": map[string]interface{}{
+					"bar": "baz",
+				},
+			},
+			Expected: `{"foo":{"bar":"baz"}}`,
 		},
 		{
 			Message:   "Test slice string output",
@@ -102,12 +110,14 @@ func TestOutputString(t *testing.T) {
 		},
 		{
 			Message: "Test multiline",
-			Interface: `multi
-		line
-		string`,
-			Expected: `multi
-		line
-		string`,
+			Interface: `
+				multi
+				line
+				string`,
+			Expected: `
+				multi
+				line
+				string`,
 		},
 		{
 			Message:   "Test chan",
@@ -124,12 +134,9 @@ func TestOutputString(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.Message, func(t *testing.T) {
 			actual, err := OutputString(tc.Interface)
-			if tc.Error != nil {
-				fmt.Println(err)
-				assert.ErrorIs(t, err, tc.Error)
-			} else {
-				assert.Equal(t, tc.Expected, actual)
-			}
+			require.NoError(t, err)
+
+			assert.Equal(t, tc.Expected, actual)
 		})
 	}
 }
