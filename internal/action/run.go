@@ -28,7 +28,7 @@ func Run(inputs Inputs) error {
 		Include: "outputs",
 	})
 	if err != nil {
-		return fmt.Errorf("failed to fetch state outputs: %w", err)
+		return fmt.Errorf("failed to fetch state outputs for workspace %s/%s: %w", inputs.Organization, inputs.Workspace, err)
 	}
 
 	for _, o := range stateVersion.Outputs {
