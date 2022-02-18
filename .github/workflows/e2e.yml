@@ -58,10 +58,4 @@ jobs:
       - name: Test multiline output
         env: 
           multiline: "${{ steps.action.outputs.multiline }}"
-        run: |
-          expected=$(printf "%s\n" "multi" "line" "output")
-
-          echo "$multiline"
-
-          test "$multiline" == "$expected"
-
+        run: test "$multiline" == "$(printf "%s\n" "multi" "line" "output")"
