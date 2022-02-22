@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"reflect"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/sethvargo/go-githubactions"
@@ -13,30 +12,19 @@ import (
 
 // OutputString takes an interface and returns a stringified version
 func OutputString(i interface{}) (string, error) {
-	if i == nil {
-		return "", nil
-	}
 
-	t := reflect.TypeOf(i)
-	switch t.Kind() {
-	case
-		reflect.Array,
-		reflect.Map,
-		reflect.Slice,
-		reflect.Struct:
-		b, err := json.Marshal(i)
+	switch v := i.(type) {
+	case int, float64, string, bool:
+		return fmt.Sprint(v), nil
+	case nil:
+		return "", nil
+	default:
+		b, err := json.Marshal(v)
 		if err != nil {
 			return "", err
 		}
+
 		return string(b), nil
-
-	case
-		reflect.Chan,
-		reflect.Func:
-		return "", nil
-
-	default:
-		return fmt.Sprint(i), nil
 	}
 }
 

@@ -3,20 +3,6 @@ output "foo" {
   value       = "bar"
 }
 
-output "json" {
-  description = "A JSON output"
-  value = jsonencode({
-    foo = "bar"
-    baz = "woz"
-  })
-}
-
-output "sensitive" {
-  description = "A sensitive ouptput to test masking"
-  value       = "secret"
-  sensitive   = true
-}
-
 output "int" {
   description = "An int"
   value       = 2
@@ -25,6 +11,11 @@ output "int" {
 output "float" {
   description = "A floating point number"
   value       = 3.14
+}
+
+output "bool" {
+  description = "A boolean"
+  value       = true
 }
 
 output "map" {
@@ -36,14 +27,22 @@ output "map" {
   })
 }
 
-output "list" {
-  description = "A list"
-  value       = tolist(["foo", "bar"])
+output "json" {
+  description = "A JSON output"
+  value = jsonencode({
+    foo = "bar"
+    baz = "woz"
+  })
 }
 
 output "set" {
   description = "A set"
   value       = toset(["foo", "bar"])
+}
+
+output "list" {
+  description = "A list"
+  value       = tolist(["foo", "bar"])
 }
 
 output "null" {
@@ -54,4 +53,10 @@ output "null" {
 output "multiline" {
   description = "A multiline output"
   value       = join("\n", ["multi", "line", "output"])
+}
+
+output "sensitive" {
+  description = "A sensitive ouptput to test masking"
+  value       = "secret"
+  sensitive   = true
 }
