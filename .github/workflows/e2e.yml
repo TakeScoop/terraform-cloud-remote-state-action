@@ -32,10 +32,10 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_TOKEN_OSS }}
 
       - name: Terraform init
-        run: terraform init -chdir test-e2e
+        run: terraform -chdir=test-e2e init 
 
       - name: Terraform apply
-        run: terraform apply -chdir test-e2e -auto-approve
+        run: terraform -chdir=test-e2e apply -auto-approve
 
       - name: Run action
         id: action
