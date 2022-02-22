@@ -12,6 +12,9 @@ jobs:
   test:
     name: e2e
     runs-on: ubuntu-latest
+    env:
+      tf_organization: takescoop-oss
+      tf_working_directory: test-e2e/
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,11 +27,11 @@ jobs:
         id: workspace
         uses:  TakeScoop/terraform-cloud-workspace-action@v2
         with:
-          terraform_organization: takescoop-oss
+          terraform_organization: ${{ env.tf_organization }}
           terraform_token: ${{ secrets.TF_TOKEN_OSS }}
           name: ${{ steps.workspace-name.outputs.result }}
           apply: true
-          working_directory: test-e2e/
+          working_directory: ${{ env.tf_working_directory }}
           execution_mode: local
 
       - uses: hashicorp/setup-terraform@v1
@@ -36,13 +39,12 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_TOKEN_OSS }}
 
       - run: |-
-          cat << EOF > test-e2e/backend.tf.json
+          cat << EOF > ${{ env.tf_working_directory }}backend.tf.json
           {
             "terraform": {
               "backend": {
                 "remote": {
-                  "hostname": "app.terraform.io",
-                  "organization": "takescoop-oss",
+                  "organization": "${{ env.tf_organization }}",
                   "workspaces": {
                     "name": "${{ steps.workspace-name.outputs.result }}"
                   }
@@ -53,17 +55,17 @@ jobs:
           EOF
 
       - name: Terraform init
-        run: terraform -chdir=test-e2e init 
+        run: terraform -chdir=${{ env.tf_working_directory }} init 
 
       - name: Terraform apply
-        run: terraform -chdir=test-e2e apply -auto-approve
+        run: terraform -chdir=${{ env.tf_working_directory }} apply -auto-approve
 
       - name: Run action
         id: action
         uses: ./
         with:
           workspace: remote-state-action-e2e-test
-          organization: takescoop-oss
+          organization: ${{ env.tf_organization }}
           token: ${{ secrets.TF_TOKEN_OSS }}
       
       - name: Test string
@@ -100,4 +102,4 @@ jobs:
             --header "Authorization: Bearer $TOKEN" \
             --header "Content-Type: application/vnd.api+json" \
             --request DELETE \
-            https://app.terraform.io/api/v2/organizations/takescoop-oss/workspaces/${{ steps.workspace-name.outputs.result }}
+            https://app.terraform.io/api/v2/organizations/${{ env.tf_organization }}/workspaces/${{ steps.workspace-name.outputs.result }}
