@@ -64,7 +64,7 @@ jobs:
         id: action
         uses: ./
         with:
-          workspace: remote-state-action-e2e-test
+          workspace: ${{ steps.workspace-name.outputs.result }}
           organization: ${{ env.tf_organization }}
           token: ${{ secrets.TF_TOKEN_OSS }}
       
