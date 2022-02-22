@@ -27,6 +27,16 @@ jobs:
           working_directory: test-e2e/
           execution_mode: local
 
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_TOKEN_OSS }}
+
+      - name: Terraform init
+        run: terraform init -chdir test-e2e
+
+      - name: Terraform apply
+        run: terraform apply -chdir test-e2e -auto-approve
+
       - name: Run action
         id: action
         uses: ./
