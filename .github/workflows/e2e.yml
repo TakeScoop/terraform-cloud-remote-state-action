@@ -27,7 +27,7 @@ jobs:
           terraform_organization: takescoop-oss
           terraform_token: ${{ secrets.TF_TOKEN_OSS }}
           name: ${{ steps.workspace-name.outputs.result }}
-          apply: "${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}"
+          apply: true
           working_directory: test-e2e/
           execution_mode: local
 
@@ -52,11 +52,11 @@ jobs:
           }
           EOF
 
-      - name: Terraform apply
-        run: terraform -chdir=test-e2e apply -auto-approve
-
       - name: Terraform init
         run: terraform -chdir=test-e2e init 
+
+      - name: Terraform apply
+        run: terraform -chdir=test-e2e apply -auto-approve
 
       - name: Run action
         id: action
