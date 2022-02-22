@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/sethvargo/go-githubactions"
@@ -56,8 +55,6 @@ func Run(inputs Inputs) error {
 		if err != nil {
 			return err
 		}
-
-		log.Println(str)
 
 		if o.Sensitive {
 			githubactions.AddMask(str)
