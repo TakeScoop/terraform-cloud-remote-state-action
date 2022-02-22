@@ -13,9 +13,8 @@ output "foo" {
 ```
 
 ```yml
-- name: Run action
+- uses: takescoop/terraform-cloud-remote-state-action@v0.1
   id: action
-  uses: takescoop/terraform-cloud-remote-state-action@v0.1
   with:
     workspace: name
     organization: org
