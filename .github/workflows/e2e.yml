@@ -42,7 +42,7 @@ jobs:
               "backend": {
                 "remote": {
                   "hostname": "app.terraform.io",
-                  "organization": "takescoop-oss"
+                  "organization": "takescoop-oss",
                   "workspaces": {
                     "name": "${{ steps.workspace-name.outputs.result }}"
                   }
