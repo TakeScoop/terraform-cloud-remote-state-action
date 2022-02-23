@@ -21,7 +21,7 @@ jobs:
 
       - name: Generate workspace name
         id: workspace-name
-        run: echo "::set-output name=result::remote-state-action-e2e-test-${{ github.run_id }}"
+        run: echo "::set-output name=result::${{ github.event.repository.name }}-e2e-${{ github.run_id }}"
 
       - name: Create workspace
         id: workspace
@@ -31,7 +31,6 @@ jobs:
           terraform_token: ${{ secrets.TF_TOKEN_OSS }}
           name: ${{ steps.workspace-name.outputs.result }}
           apply: true
-          working_directory: ${{ env.tf_working_directory }}
           execution_mode: local
 
       - uses: hashicorp/setup-terraform@v1
