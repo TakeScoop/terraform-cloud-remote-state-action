@@ -1,0 +1,104 @@
+name: E2E Test
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  checks: write
+
+jobs:
+  test:
+    name: e2e
+    runs-on: ubuntu-latest
+    env:
+      tf_organization: takescoop-oss
+      tf_working_directory: test-e2e/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Generate workspace name
+        id: workspace-name
+        run: echo "::set-output name=result::${{ github.event.repository.name }}-e2e-${{ github.run_id }}"
+
+      - name: Create workspace
+        id: workspace
+        uses:  TakeScoop/terraform-cloud-workspace-action@v2
+        with:
+          terraform_organization: ${{ env.tf_organization }}
+          terraform_token: ${{ secrets.TF_TOKEN_OSS }}
+          name: ${{ steps.workspace-name.outputs.result }}
+          apply: true
+          execution_mode: local
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_TOKEN_OSS }}
+
+      - run: |-
+          cat << EOF > ${{ env.tf_working_directory }}backend.tf.json
+          {
+            "terraform": {
+              "backend": {
+                "remote": {
+                  "organization": "${{ env.tf_organization }}",
+                  "workspaces": {
+                    "name": "${{ steps.workspace-name.outputs.result }}"
+                  }
+                }
+              }
+            }
+          }
+          EOF
+
+      - name: Terraform init
+        run: terraform -chdir=${{ env.tf_working_directory }} init 
+
+      - name: Terraform apply
+        run: terraform -chdir=${{ env.tf_working_directory }} apply -auto-approve
+
+      - name: Run action
+        id: action
+        uses: ./
+        with:
+          workspace: ${{ steps.workspace-name.outputs.result }}
+          organization: ${{ env.tf_organization }}
+          token: ${{ secrets.TF_TOKEN_OSS }}
+      
+      - name: Test string
+        run: test "${{ steps.action.outputs.foo }}" == "bar"
+      - name: Test JSON output
+        run: test "${{ fromJson(steps.action.outputs.json).foo }}" == "bar"
+      - name: Test sensitive output
+        run: test "${{ steps.action.outputs.sensitive }}" == "secret"
+      - name: Test int
+        run: test ${{ steps.action.outputs.int }} == 2
+      - name: Test float
+        run: test ${{ steps.action.outputs.float }} == 3.14
+      - name: Test map
+        run: test "${{ fromJson(steps.action.outputs.map).foo.bar }}" == "baz"
+      - name: Test list
+        run: test "${{ fromJson(steps.action.outputs.list)[0] }}" == "foo"        
+      - name: Test set
+        run: |
+          test '${{ steps.action.outputs.set }}' == '["foo","bar"]' ||
+            test '${{ steps.action.outputs.set }}' == '["bar","foo"]'
+      - name: Test null
+        run: test "${{ steps.action.outputs.null }}" == ""        
+      - name: Test multiline output
+        env: 
+          multiline: "${{ steps.action.outputs.multiline }}"
+        run: test "$multiline" == "$(printf "%s\n" "multi" "line" "output")"
+
+      - name: Cleanup workspace
+        if: always()
+        env:
+          TOKEN: ${{ secrets.TF_TOKEN_OSS }}
+        run: |-
+          curl \
+            --header "Authorization: Bearer $TOKEN" \
+            --header "Content-Type: application/vnd.api+json" \
+            --request DELETE \
+            https://app.terraform.io/api/v2/organizations/${{ env.tf_organization }}/workspaces/${{ steps.workspace-name.outputs.result }}

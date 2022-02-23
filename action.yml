@@ -1,0 +1,19 @@
+name: Terraform Cloud Remote State Action
+description: Fetches outputs from a Terraform Cloud Workspace
+inputs:
+  workspace:
+    description: Terraform Cloud workspace name
+    required: true
+  organization:
+    description: Terraform Cloud organization name
+    required: true
+  address:
+    required: false
+    description: Terraform Cloud address
+    default: https://app.terraform.io
+  token:
+    required: true
+    description: A Terraform Cloud API token capable of reading workspace state
+runs:
+  using: docker
+  image: Dockerfile    
