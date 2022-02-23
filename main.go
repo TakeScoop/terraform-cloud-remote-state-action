@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/sethvargo/go-githubactions"
-	"github.com/takescoop/terraform-cloud-remote-state-action/internal/action"
+	"github.com/takescoop/terraform-cloud-outputs-action/internal/action"
 )
 
 func main() {
