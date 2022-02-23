@@ -14,4 +14,4 @@ branches:
         contexts:
           - lint
           - test
-          - actionlint
+          - e2e
