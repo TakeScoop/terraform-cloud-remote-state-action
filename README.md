@@ -1,4 +1,4 @@
-# terraform-cloud-remote-state-action
+# terraform-cloud-outputs-action
 
 GitHub Action to fetch outputs from a Terraform Cloud workspace
 
@@ -13,7 +13,7 @@ output "foo" {
 ```
 
 ```yml
-- uses: takescoop/terraform-cloud-remote-state-action@v0.1
+- uses: takescoop/terraform-cloud-outputs-action@v0.1
   id: action
   with:
     workspace: name

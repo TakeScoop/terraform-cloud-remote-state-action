@@ -5,4 +5,4 @@ COPY . ./
 
 RUN go build
 
-ENTRYPOINT ["/src/terraform-cloud-remote-state-action"]
+ENTRYPOINT ["/src/terraform-cloud-outputs-action"]

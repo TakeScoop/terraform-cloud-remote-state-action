@@ -1,4 +1,4 @@
-module github.com/takescoop/terraform-cloud-remote-state-action
+module github.com/takescoop/terraform-cloud-outputs-action
 
 go 1.17
 
