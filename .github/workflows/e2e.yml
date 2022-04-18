@@ -33,7 +33,7 @@ jobs:
           apply: true
           execution_mode: local
 
-      - uses: hashicorp/setup-terraform@v1
+      - uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_TOKEN_OSS }}
 
